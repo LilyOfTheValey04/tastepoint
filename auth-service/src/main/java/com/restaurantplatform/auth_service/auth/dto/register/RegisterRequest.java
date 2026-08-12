@@ -1,4 +1,4 @@
-package com.restaurantplatform.auth_service.auth.dto;
+package com.restaurantplatform.auth_service.auth.dto.register;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
