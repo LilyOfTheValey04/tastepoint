@@ -17,5 +17,9 @@ server:
 eureka:
   client:
     enabled: false
-   # service-url:
+    # service-url:
     #  defaultZone: http://localhost:8761/eureka
+
+jwt:
+      secret: my-super-secret-key-for-jwt-authentication-123456789
+      expiration: 3600000
