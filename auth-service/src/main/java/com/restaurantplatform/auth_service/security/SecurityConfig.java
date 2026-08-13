@@ -49,6 +49,14 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers("/api/owner/**")
+                        .hasRole("RESTAURANT_OWNER")
+
+                        .requestMatchers("/api/client/**")
+                        .hasRole("CLIENT")
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
