@@ -1,5 +1,6 @@
 package com.restaurantplatform.auth_service.security;
 
+import com.restaurantplatform.auth_service.exception.SecurityExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final SecurityExceptionHandler securityExceptionHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -34,6 +36,10 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS
                         )
                 )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(securityExceptionHandler)
+                        .accessDeniedHandler(securityExceptionHandler)
+                )
 
                 .authorizeHttpRequests(auth -> auth
 
@@ -49,6 +55,14 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers("/api/owner/**")
+                        .hasRole("RESTAURANT_OWNER")
+
+                        .requestMatchers("/api/client/**")
+                        .hasRole("CLIENT")
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 )

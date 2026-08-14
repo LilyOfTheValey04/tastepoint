@@ -2,6 +2,8 @@ package com.restaurantplatform.auth_service.auth;
 
 import com.restaurantplatform.auth_service.auth.dto.login.LoginRequest;
 import com.restaurantplatform.auth_service.auth.dto.register.RegisterRequest;
+import com.restaurantplatform.auth_service.exception.EmailAlreadyExistsException;
+import com.restaurantplatform.auth_service.exception.InvalidCredentialsException;
 import com.restaurantplatform.auth_service.security.JwtService;
 import com.restaurantplatform.auth_service.user.User;
 import com.restaurantplatform.auth_service.user.UserRepository;
@@ -23,7 +25,7 @@ public class AuthService {
 
         if (userRepository.existsByEmail(request.email()))
         {
-            throw new IllegalArgumentException("Email is already registered");
+            throw new EmailAlreadyExistsException("Email is already registered");
         }
 
         User user = new User();
@@ -40,13 +42,13 @@ public class AuthService {
 
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Invalid email or password"));
+                        new InvalidCredentialsException("Invalid email or password"));
 
         if (!passwordEncoder.matches(
                 request.password(),
                 user.getPassword())) {
 
-            throw new IllegalArgumentException("Invalid email or password");
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
         return jwtService.generateToken(user.getEmail());
