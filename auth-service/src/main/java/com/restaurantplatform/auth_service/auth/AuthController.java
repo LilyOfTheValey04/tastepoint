@@ -4,6 +4,8 @@ import com.restaurantplatform.auth_service.auth.dto.login.LoginRequest;
 import com.restaurantplatform.auth_service.auth.dto.login.LoginResponse;
 import com.restaurantplatform.auth_service.auth.dto.register.RegisterRequest;
 import com.restaurantplatform.auth_service.auth.dto.register.RegisterResponse;
+import com.restaurantplatform.auth_service.auth.dto.update.UpdateProfileRequest;
+import com.restaurantplatform.auth_service.auth.dto.update.UpdateProfileResponse;
 import com.restaurantplatform.auth_service.security.JwtService;
 import com.restaurantplatform.auth_service.user.User;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -64,6 +66,36 @@ public class AuthController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @PutMapping("/me")
+    public ResponseEntity<UpdateProfileResponse> updateProfile(
+            Authentication authentication,
+            @Valid @RequestBody UpdateProfileRequest request
+    ) {
+
+        String email = authentication.getName();
+
+        UpdateProfileResponse updatedUser = authService.updateProfile(
+                email,
+                request
+        );
+
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteAccount(
+            Authentication authentication
+    ) {
+
+        String email = authentication.getName();
+
+        authService.deleteAccount(email);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
