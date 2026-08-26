@@ -7,9 +7,14 @@ import com.restaurantplatform.restaurant_service.restaurant.dtos.CreateRestauran
 import com.restaurantplatform.restaurant_service.restaurant.dtos.RestaurantResponse;
 import com.restaurantplatform.restaurant_service.restaurant.dtos.UpdateRestaurantRequest;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -26,10 +31,18 @@ public class RestaurantService {
         restaurant.setDescription(request.description());
         restaurant.setCity(request.city());
         restaurant.setAddress(request.address());
-        restaurant.setLatitude(request.latitude());
-        restaurant.setLongitude(request.longitude());
+
+        restaurant.setLocation(
+                createPoint(
+                        request.longitude().doubleValue(),
+                        request.latitude().doubleValue()
+                )
+        );
+
         restaurant.setPhone(request.phone());
-        restaurant.setAveragePriceRangePerPerson(request.averagePriceRangePerPerson());
+        restaurant.setAveragePriceRangePerPerson(
+                request.averagePriceRangePerPerson()
+        );
         restaurant.setCurrency(request.currency());
         restaurant.setCuisineType(request.cuisineType());
 
@@ -74,8 +87,12 @@ public class RestaurantService {
         restaurant.setDescription(request.description());
         restaurant.setCity(request.city());
         restaurant.setAddress(request.address());
-        restaurant.setLatitude(request.latitude());
-        restaurant.setLongitude(request.longitude());
+        restaurant.setLocation(
+                createPoint(
+                        request.longitude().doubleValue(),
+                        request.latitude().doubleValue()
+                )
+        );
         restaurant.setPhone(request.phone());
         restaurant.setAveragePriceRangePerPerson(request.averagePriceRangePerPerson());
         restaurant.setCurrency(request.currency());
@@ -100,14 +117,16 @@ public class RestaurantService {
 
     private RestaurantResponse mapToResponse(Restaurant restaurant) {
 
+        Point location = restaurant.getLocation();
+
         return new RestaurantResponse(
                 restaurant.getId(),
                 restaurant.getName(),
                 restaurant.getDescription(),
                 restaurant.getCity(),
                 restaurant.getAddress(),
-                restaurant.getLatitude(),
-                restaurant.getLongitude(),
+                BigDecimal.valueOf(location.getY()), // latitude
+                BigDecimal.valueOf(location.getX()), // longitude
                 restaurant.getPhone(),
                 restaurant.getAveragePriceRangePerPerson(),
                 restaurant.getCurrency(),
@@ -144,6 +163,7 @@ public class RestaurantService {
             String city,
             CuisineType cuisineType,
             AveragePriceRangePerPerson priceRange
+
     ) {
 
         Specification<Restaurant> specification =
@@ -157,5 +177,22 @@ public class RestaurantService {
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
+    }
+
+    private Point createPoint(
+            double longitude,
+            double latitude
+    ) {
+
+        GeometryFactory geometryFactory =
+                new GeometryFactory(new PrecisionModel(), 4326);
+
+        Point point = geometryFactory.createPoint(
+                new Coordinate(longitude, latitude)
+        );
+
+        point.setSRID(4326);
+
+        return point;
     }
 }

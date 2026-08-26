@@ -2,7 +2,10 @@ package com.restaurantplatform.restaurant_service.restaurant;
 
 import com.restaurantplatform.restaurant_service.enums.AveragePriceRangePerPerson;
 import com.restaurantplatform.restaurant_service.enums.CuisineType;
+import jakarta.persistence.criteria.Expression;
 import org.springframework.data.jpa.domain.Specification;
+
+import java.math.BigDecimal;
 
 public class RestaurantSpecification {
 
@@ -59,7 +62,7 @@ public class RestaurantSpecification {
             );
         };
     }
-    
+
     public static Specification<Restaurant> hasAveragePriceRange(
             AveragePriceRangePerPerson priceRange) {
 
@@ -72,6 +75,34 @@ public class RestaurantSpecification {
             return criteriaBuilder.equal(
                     root.get("averagePriceRangePerPerson"),
                     priceRange
+            );
+        };
+    }
+
+    public static Specification<Restaurant> withinRadius(
+            BigDecimal latitude,
+            BigDecimal longitude,
+            Double radius
+    ) {
+
+        return (root, query, criteriaBuilder) -> {
+
+            if (latitude == null || longitude == null || radius == null) {
+                return null;
+            }
+
+            Expression<Double> distance = criteriaBuilder.function(
+                    "calculate_distance",
+                    Double.class,
+                    root.get("latitude"),
+                    root.get("longitude"),
+                    criteriaBuilder.literal(latitude.doubleValue()),
+                    criteriaBuilder.literal(longitude.doubleValue())
+            );
+
+            return criteriaBuilder.lessThanOrEqualTo(
+                    distance,
+                    radius
             );
         };
     }

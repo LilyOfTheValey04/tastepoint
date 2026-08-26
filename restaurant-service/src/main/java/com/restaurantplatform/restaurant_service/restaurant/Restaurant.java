@@ -5,6 +5,7 @@ import com.restaurantplatform.restaurant_service.enums.CuisineType;
 import com.restaurantplatform.restaurant_service.enums.Currency;
 import jakarta.persistence.*;
 import lombok.*;
+import org.locationtech.jts.geom.Point;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,11 +34,8 @@ public class Restaurant {
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
-    private BigDecimal latitude;
-
-    @Column(nullable = false)
-    private BigDecimal longitude;
+    @Column(columnDefinition = "geometry(Point,4326)")
+    private Point location;
 
     private String phone;
 

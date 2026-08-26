@@ -116,6 +116,7 @@ public class RestaurantController {
                         city,
                         cuisineType,
                         averagePriceRangePerPerson
+
                 )
         );
     }
