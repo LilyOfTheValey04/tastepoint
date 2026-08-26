@@ -16,6 +16,9 @@ public record CreateRestaurantRequest(
         String description,
 
         @NotBlank
+        String city,
+
+        @NotBlank
         String address,
 
         BigDecimal latitude,
