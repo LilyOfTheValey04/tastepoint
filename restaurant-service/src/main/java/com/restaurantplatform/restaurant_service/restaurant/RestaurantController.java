@@ -1,5 +1,7 @@
 package com.restaurantplatform.restaurant_service.restaurant;
 
+import com.restaurantplatform.restaurant_service.enums.AveragePriceRangePerPerson;
+import com.restaurantplatform.restaurant_service.enums.CuisineType;
 import com.restaurantplatform.restaurant_service.restaurant.dtos.CreateRestaurantRequest;
 import com.restaurantplatform.restaurant_service.restaurant.dtos.RestaurantResponse;
 import com.restaurantplatform.restaurant_service.restaurant.dtos.UpdateRestaurantRequest;
@@ -70,5 +72,51 @@ public class RestaurantController {
         restaurantService.deleteRestaurant(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<RestaurantResponse>> searchRestaurants(
+            @RequestParam String query
+    ) {
+
+        return ResponseEntity.ok(
+                restaurantService.searchRestaurants(query)
+        );
+    }
+
+    @GetMapping("/cuisine/{cuisineType}")
+    public ResponseEntity<List<RestaurantResponse>> getRestaurantsByCuisine(
+            @PathVariable CuisineType cuisineType
+    ) {
+
+        return ResponseEntity.ok(
+                restaurantService.getRestaurantsByCuisine(cuisineType)
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<RestaurantResponse>> searchRestaurants(
+
+            @RequestParam(required = false)
+            String query,
+
+            @RequestParam(required = false)
+            String city,
+
+            @RequestParam(required = false)
+            CuisineType cuisineType,
+
+            @RequestParam(required = false)
+            AveragePriceRangePerPerson averagePriceRangePerPerson
+    ) {
+
+        return ResponseEntity.ok(
+                restaurantService.searchRestaurants(
+                        query,
+                        city,
+                        cuisineType,
+                        averagePriceRangePerPerson
+                )
+        );
     }
 }
