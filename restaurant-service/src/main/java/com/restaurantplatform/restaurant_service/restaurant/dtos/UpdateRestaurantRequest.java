@@ -13,6 +13,8 @@ public record UpdateRestaurantRequest(
 
         String description,
 
+        String city,
+
         String address,
 
         BigDecimal latitude,
