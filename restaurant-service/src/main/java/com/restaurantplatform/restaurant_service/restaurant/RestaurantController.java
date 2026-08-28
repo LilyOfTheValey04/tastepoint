@@ -74,7 +74,7 @@ public class RestaurantController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/search")
+   /* @GetMapping("/search")
     public ResponseEntity<List<RestaurantResponse>> searchRestaurants(
             @RequestParam String query
     ) {
@@ -82,7 +82,7 @@ public class RestaurantController {
         return ResponseEntity.ok(
                 restaurantService.searchRestaurants(query)
         );
-    }
+    }*/
 
     @GetMapping("/cuisine/{cuisineType}")
     public ResponseEntity<List<RestaurantResponse>> getRestaurantsByCuisine(
@@ -117,6 +117,22 @@ public class RestaurantController {
                         cuisineType,
                         averagePriceRangePerPerson
 
+                )
+        );
+    }
+
+    @GetMapping("/nearby")
+    public ResponseEntity<List<RestaurantResponse>> findNearbyRestaurants(
+            @RequestParam double latitude,
+            @RequestParam double longitude,
+            @RequestParam(defaultValue = "5000") double radius
+    ) {
+
+        return ResponseEntity.ok(
+                restaurantService.findNearbyRestaurants(
+                        latitude,
+                        longitude,
+                        radius
                 )
         );
     }

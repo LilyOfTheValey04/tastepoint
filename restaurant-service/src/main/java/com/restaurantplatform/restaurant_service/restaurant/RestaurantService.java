@@ -195,4 +195,17 @@ public class RestaurantService {
 
         return point;
     }
+
+    public List<RestaurantResponse> findNearbyRestaurants(
+            double latitude,
+            double longitude,
+            double radius
+    ) {
+
+        return restaurantRepository
+                .findNearbyRestaurants(latitude, longitude, radius)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
 }

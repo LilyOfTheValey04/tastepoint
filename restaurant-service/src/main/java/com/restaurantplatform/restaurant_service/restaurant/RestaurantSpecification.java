@@ -79,7 +79,7 @@ public class RestaurantSpecification {
         };
     }
 
-    public static Specification<Restaurant> withinRadius(
+    /*public static Specification<Restaurant> withinRadius(
             BigDecimal latitude,
             BigDecimal longitude,
             Double radius
@@ -105,5 +105,5 @@ public class RestaurantSpecification {
                     radius
             );
         };
-    }
+    }*/
 }
